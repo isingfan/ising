@@ -7,14 +7,12 @@ import random
 import matplotlib.pyplot as plt
 import pandas as pd
 J=1 #interaction energy
-D=14
+D=16
 N=D**2 #number of cells
-nmc=100000 #number of monte carlo steps for each temperature value
-nmceq=95000 #number of states that are counted for expectation value
+nmc=2000000 #number of monte carlo steps for each temperature value
+nmceq=1900000 #number of states that are counted for expectation value
 #k=1.380649*(10**-23) #boltzmann constant in m^2 kg s^-2 K^-1
 k=1
-Tlist=[]
-Mlist=[]
 
 def getmagnetization(x):
     M=0
@@ -57,14 +55,15 @@ def gettopneighborvalue(cell):
 def getbottomneighborvalue(cell):
     value=latt[getbottomneighbor(cell)]
     return value
-
+Tlist=[]
+Mlist=[]
 steplist=[]
 indMlist=[]
 #for custom temperature values, put values in this:
 Tarray=[]
 #for range of temperatures, use this:
-for i in range (36, 62):
-    Tarray.append(i/20)
+for i in range (60, 90):
+    Tarray.append(i/30)
 nmctotal=0
 for T in Tarray:
     print('Temperature is:', T)
@@ -85,7 +84,8 @@ for T in Tarray:
     for i in range (0, N):
         M=M+latt[i]
     if T==Tarray[0]:
-        for j in range (0, round(-abs(T-2.6)+3)*nmc):
+        #for j in range (0, round(-abs(T-2.6)+3)*nmc):
+        for j in range (0, nmc):
             nmccount=nmccount+1
             celltoflip=random.randint(0, N-1)
             oldspin=latt[celltoflip]
@@ -112,6 +112,7 @@ for T in Tarray:
             steplist.append(nmctotal+1)
             nmctotal=nmctotal+1
         plt.plot(steplist, indMlist)
+        plt.xscale('log')
         plt.show()
         print('choose nmceqstart:')
         nmceqstart=int(input())
