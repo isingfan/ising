@@ -20,7 +20,7 @@ plt.figure(1, dpi=120)
 #plt.title("")
 plt.xlabel("Temperature (Kelvin)")
 plt.ylabel("Magnetization")
-plt.xlim(1.6, 2.4)
+plt.xlim(1.7, 3.0)
 plt.ylim(0, 1.2)
 plt.xscale("linear")
 plt.yscale("linear")
@@ -31,20 +31,22 @@ kset = 1.0967
 Cset = 2.325
 bset = 0.172
 Tmin=1.7
-Tmax=5.0
+Tmax=2.7
+Tdisplaymin=1.0
+Tdisplaymax=2.7
 #define function
 def func(x, k, C, b):
     return k*(C-x)**b
 
 #write array for display
 xdisplay=np.array([])
-for i in range(int(Tmin*100), int(Tmax*100)):
+for i in range(int(Tdisplaymin*100), int(Tdisplaymax*100)):
     xdisplay = np.append(xdisplay, i*0.01)
 #print("xdisplay is: " + str(xdisplay))
 #evaluate and plot function
 funcdata = func(xdata, kset, Cset, bset)
 funcdisplay=np.array([])
-for j in np.arange (0, int(Tmax*100-Tmin*100)):
+for j in np.arange (0, int(Tdisplaymax*100-Tdisplaymin*100)):
     funcdisplay = np.append(funcdisplay, func(xdisplay[j], kset, Cset, bset))
 print(funcdisplay)
 plt.plot(xdisplay, funcdisplay, label="Model")
