@@ -9,7 +9,7 @@ import pandas as pd
 import csv
 from scipy.optimize import curve_fit
 #import data
-with open ("D:/WPy64-31090/notebooks/Data pairings (square lattice)/Reduced csv files/file_Tmin_1.8_Tmax_3.0_dT_0.025_Dimension_55_nmc_50000000_nmceqstart_938000_nmceq_45000000_data reduced.csv", "r") as i:
+with open ("D:/WPy64-31090/notebooks/file_Tmin_2.3_Tmax_3.3_dT_0.05_Dimension_30_nmc_2000000_nmceqstart_153000_nmceq_600000_lattice type_rhombus_data.csv", "r") as i:
     rawdata = list(csv.reader(i, delimiter = ","))
 
 exampledata = np.array(rawdata[0:], dtype=float)
@@ -20,7 +20,7 @@ plt.figure(1, dpi=120)
 #plt.title("")
 plt.xlabel("Temperature (Kelvin)")
 plt.ylabel("Magnetization")
-plt.xlim(1.7, 3.0)
+plt.xlim(2.3, 3.3)
 plt.ylim(0, 1.2)
 plt.xscale("linear")
 plt.yscale("linear")
@@ -30,10 +30,8 @@ plt.plot(xdata, ydata,  'o', label = "Experimental Data")
 kset = 1.0967
 Cset = 2.325
 bset = 0.172
-Tmin=1.7
-Tmax=2.7
-Tdisplaymin=1.0
-Tdisplaymax=2.7
+Tdisplaymin=2.3
+Tdisplaymax=3.3
 #define function
 def func(x, k, C, b):
     return k*(C-x)**b
@@ -55,6 +53,6 @@ plt.legend()
 #curve fit data to model
 popt, pcov = curve_fit(func, xdata, ydata, bounds = (0, 10))
 perr = np.sqrt(np.diag(pcov))
-#print(popt)
+print(popt)
 #print(pcov)
 plt.show()

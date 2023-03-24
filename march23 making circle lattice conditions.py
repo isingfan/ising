@@ -7,13 +7,12 @@ import random
 import matplotlib.pyplot as plt
 import pandas as pd
 J = 1 #interaction energy
-lattice = "rhombus"
-D = 150
-N = D**2 #number of cells
-nmc = 120000000 #number of monte carlo steps for each temperature value
-nmceq = 30000000 #number of states that are counted for expectation value
-Tmin = 2.0
-Tmax = 5.0
+lattice = "circle or line"
+N = 1000 #number of cells
+nmc = 10000000 #number of monte carlo steps for each temperature value
+nmceq = 500000 #number of states that are counted for expectation value
+Tmin = 0.25
+Tmax = 10.0
 dT = 0.25
 #k=1.380649*(10**-23) #boltzmann constant in m^2 kg s^-2 K^-1
 k=1
@@ -41,18 +40,6 @@ def getfirstneighbor(cell):
 def getsecondneighbor(cell):
     index = (cell + 1)%N
     return index
-def getthirdneighbor(cell):
-    index = (cell - D)%N
-    return index
-def getfourthneighbor(cell):
-    index = (cell + D)%N
-    return index
-def getfifthneighbor(cell):
-    index = (cell + (D+1))%N
-    return index
-def getsixthneighbor(cell):
-    index = (cell + (D-1))%N
-    return index
 
 Tlist=[]
 Mlist=[]
@@ -64,7 +51,7 @@ while t<=Tmax:
     Tarray.append(t)
     t=t+dT
 nmctotal=0
-print('Dimension is:', D)
+print('Number of points is:', N)
 print('nmc is:', nmc)
 print('nmceq is:', nmceq)
 for T in Tarray:
@@ -88,21 +75,13 @@ for T in Tarray:
             nmccount=nmccount+1
             celltoflip=random.randint(0, N-1)
             oldspin=latt[celltoflip]
-            dE=2.0*J*latt[celltoflip]*(latt[getsixthneighbor(celltoflip)]+latt[getfifthneighbor(celltoflip)]+latt[getfourthneighbor(celltoflip)]+latt[getthirdneighbor(celltoflip)]+latt[getsecondneighbor(celltoflip)]+latt[getfirstneighbor(celltoflip)])
+            dE=2.0*J*latt[celltoflip]*(latt[getsecondneighbor(celltoflip)]+latt[getfirstneighbor(celltoflip)])
             if dE<=0.0:
                 latt[celltoflip] = -latt[celltoflip]
             else:
                 if dE==4.0*J:
                     rand=random.random()
                     if rand < acc1:
-                        latt[celltoflip] = -latt[celltoflip]
-                if dE==8.0*J:
-                    rand=random.random()
-                    if rand<acc2:
-                        latt[celltoflip] = -latt[celltoflip]
-                if dE==12.0*J:
-                    rand=random.random()
-                    if rand<acc3:
                         latt[celltoflip] = -latt[celltoflip]
             if oldspin != latt[celltoflip]:
                 M=M+2.0*latt[celltoflip]
@@ -114,11 +93,11 @@ for T in Tarray:
         plt.show()
         print('choose nmceqstart:')
         nmceqstart=int(input())
-        filesuffix="D:/WPy64-31090/notebooks/file" +"_Tmin_"+ str(Tmin) +"_Tmax_"+ str(Tmax) +"_dT_" + str(dT) + "_Dimension_" + str(D) + "_nmc_" + str(nmc) + "_nmceqstart_" + str(nmceqstart) + "_nmceq_" + str(nmceq) + "_lattice type_" + lattice
+        filesuffix="D:/WPy64-31090/notebooks/file" +"_Tmin_"+ str(Tmin) +"_Tmax_"+ str(Tmax) +"_dT_" + str(dT) + "_Number of points_" + str(N) + "_nmc_" + str(nmc) + "_nmceqstart_" + str(nmceqstart) + "_nmceq_" + str(nmceq) + "_lattice type_" + lattice
         filedata = filesuffix+"_data.csv"
         for p in range(nmceqstart, nmc):
             Madd=Madd+abs(M)
-        Madd=Madd/(nmc-nmceqstart)/D**2
+        Madd=Madd/(nmc-nmceqstart)/N
         #if T==Tarray[1]:
             #print('choose nmceq for the rest of the temperatures:')
             #nmceq=int(input())
@@ -127,21 +106,13 @@ for T in Tarray:
             nmccount=nmccount+1
             celltoflip=random.randint(0, N-1)
             oldspin=latt[celltoflip]
-            dE=2.0*J*latt[celltoflip]*(latt[getsixthneighbor(celltoflip)]+latt[getfifthneighbor(celltoflip)]+latt[getfourthneighbor(celltoflip)]+latt[getthirdneighbor(celltoflip)]+latt[getsecondneighbor(celltoflip)]+latt[getfirstneighbor(celltoflip)])
+            dE=2.0*J*latt[celltoflip]*(latt[getsecondneighbor(celltoflip)]+latt[getfirstneighbor(celltoflip)])
             if dE<=0.0:
                 latt[celltoflip] = -latt[celltoflip]
             else:
                 if dE==4.0*J:
                     rand=random.random()
                     if rand < acc1:
-                        latt[celltoflip] = -latt[celltoflip]
-                if dE==8.0*J:
-                    rand=random.random()
-                    if rand<acc2:
-                        latt[celltoflip] = -latt[celltoflip]
-                if dE==12.0*J:
-                    rand=random.random()
-                    if rand<acc3:
                         latt[celltoflip] = -latt[celltoflip]
             if oldspin != latt[celltoflip]:
                 M=M+2.0*latt[celltoflip]
@@ -150,7 +121,7 @@ for T in Tarray:
             nmctotal=nmctotal+1
             if j>nmc-nmceq:
                 Madd=Madd+abs(M)
-        Madd=Madd/(nmceq)/D**2
+        Madd=Madd/(nmceq)/N
     Mlist.append(abs(Madd))
     print('expectation value of magnetization for temperature ', T, ' is ', abs(Madd))
     prevlatt=latt
